@@ -12,6 +12,7 @@ public class Result<T> {
 	public static  <T> Result<T> success(T data){
 		return new Result<T>(data);
 	}
+
 	
 	/**
 	 *  失败时候的调用
