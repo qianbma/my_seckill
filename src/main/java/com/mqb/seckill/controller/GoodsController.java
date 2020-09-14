@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 
 @Controller
@@ -22,13 +23,14 @@ public class GoodsController {
 
     @RequestMapping("/to_list")
     public String toList(Model model,
+                         HttpServletResponse response,
                          @CookieValue(value = MiaoshaUserConstants.COOKIE_NAME_TOKEN,required = false)String cookieToken,
                          @RequestParam(value = MiaoshaUserConstants.COOKIE_NAME_TOKEN,required = false)String paramToken){
         if(StringUtils.isEmpty(cookieToken)&&StringUtils.isEmpty(paramToken)){
             return "login";
         }
         String token = StringUtils.isEmpty(paramToken)?cookieToken:paramToken;
-        MiaoshaUser miaoshaUser = miaoShaUserService.getByToken(token);
+        MiaoshaUser miaoshaUser = miaoShaUserService.getByToken(response, token);
         model.addAttribute("user",miaoshaUser);
         return "goods_list";
     }

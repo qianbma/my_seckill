@@ -12,7 +12,7 @@ public interface MiaoshaUserService {
 
     Boolean login(HttpServletResponse response, LoginVo loginVo);
 
-    MiaoshaUser getByToken(String token);
+    MiaoshaUser getByToken(HttpServletResponse response, String token);
 
     String getCookieTokenName();
 }
