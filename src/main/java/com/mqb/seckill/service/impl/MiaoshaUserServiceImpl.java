@@ -4,18 +4,25 @@ import com.mqb.seckill.entity.LoginVo;
 import com.mqb.seckill.entity.MiaoshaUser;
 import com.mqb.seckill.exception.GlobalException;
 import com.mqb.seckill.mapper.MiaoshaUserMapper;
+import com.mqb.seckill.redis.MiaoshaUserKey;
+import com.mqb.seckill.redis.RedisService;
 import com.mqb.seckill.result.CodeMsg;
-import com.mqb.seckill.service.MiaoShaUserService;
+import com.mqb.seckill.service.MiaoshaUserService;
 import com.mqb.seckill.util.MD5Util;
+import com.mqb.seckill.util.UUIDUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 @Service
-public class MiaoShaUserServiceImpl implements MiaoShaUserService {
+public class MiaoshaUserServiceImpl implements MiaoshaUserService {
     @Resource
     private MiaoshaUserMapper miaoshaUserMapper;
+    @Resource
+    private RedisService redisService;
 
     @Override
     public MiaoshaUser getById(String id) {
@@ -23,7 +30,16 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
     }
 
     @Override
-    public Boolean login(LoginVo loginVo) {
+    public MiaoshaUser getByToken(String token) {
+        if (StringUtils.isEmpty(token)) {
+            return null;
+        }
+        MiaoshaUser miaoshaUser = redisService.get(MiaoshaUserKey.token, token, MiaoshaUser.class);
+        return miaoshaUser;
+    }
+
+    @Override
+    public Boolean login(HttpServletResponse response, LoginVo loginVo) {
         if (loginVo == null) {
             throw new GlobalException(CodeMsg.SERVER_ERROR);
         }
@@ -39,6 +55,17 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
         if (!StringUtils.equals(calaPass, dbPass)) {
             throw new GlobalException(CodeMsg.PASSWORD_ERROR);
         }
+        // 生成token
+        String token = UUIDUtil.uuid();
+        // 保存到redis
+        redisService.set(MiaoshaUserKey.token, token, user);
+        Cookie cookie = new Cookie(COOKIE_NAME_TOKEN, token);
+        cookie.setMaxAge(MiaoshaUserKey.token.expireSeconds());
+        cookie.setPath("/");
+        response.addCookie(cookie);
         return true;
+    }
+    public String getCookieTokenName(){
+        return COOKIE_NAME_TOKEN;
     }
 }
