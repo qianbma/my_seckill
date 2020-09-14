@@ -37,17 +37,17 @@ public class LoginController {
     @RequestMapping("/do_login")
     @ResponseBody
     public Result<Boolean> doLogin(LoginVo loginVo){
-        String password = loginVo.getPassword();
-        String mobile = loginVo.getMobile();
-        if (StringUtils.isEmpty(password)) {
-            return Result.error(CodeMsg.PASSWORD_EMPTY);
-        }
-        if (StringUtils.isEmpty(mobile)) {
-            return Result.error(CodeMsg.MOBILE_EMPTY);
-        }
-        if(!ValidatorUtil.isMobile(mobile)){
-            return Result.error(CodeMsg.MOBILE_ERROR);
-        }
+//        String password = loginVo.getPassword();
+//        String mobile = loginVo.getMobile();
+//        if (StringUtils.isEmpty(password)) {
+//            return Result.error(CodeMsg.PASSWORD_EMPTY);
+//        }
+//        if (StringUtils.isEmpty(mobile)) {
+//            return Result.error(CodeMsg.MOBILE_EMPTY);
+//        }
+//        if(!ValidatorUtil.isMobile(mobile)){
+//            return Result.error(CodeMsg.MOBILE_ERROR);
+//        }
         CodeMsg codeMsg = userService.login(loginVo);
         if(codeMsg.getCode()==0){
             return Result.success(true);
