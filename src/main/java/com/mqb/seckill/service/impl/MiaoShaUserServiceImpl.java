@@ -2,6 +2,7 @@ package com.mqb.seckill.service.impl;
 
 import com.mqb.seckill.entity.LoginVo;
 import com.mqb.seckill.entity.MiaoshaUser;
+import com.mqb.seckill.exception.GlobalException;
 import com.mqb.seckill.mapper.MiaoshaUserMapper;
 import com.mqb.seckill.result.CodeMsg;
 import com.mqb.seckill.service.MiaoShaUserService;
@@ -22,22 +23,22 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
     }
 
     @Override
-    public CodeMsg login(LoginVo loginVo) {
-        if(loginVo==null){
-            return CodeMsg.SERVER_ERROR;
+    public Boolean login(LoginVo loginVo) {
+        if (loginVo == null) {
+            throw new GlobalException(CodeMsg.SERVER_ERROR);
         }
         String mobile = loginVo.getMobile();
         String frontPass = loginVo.getPassword();
         MiaoshaUser user = getById(mobile);
-        if(user==null){
-            return CodeMsg.MOBILE_NOT_EXIST;
+        if (user == null) {
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
         }
         String dbPass = user.getPassword();
         String salt = user.getSalt();
         String calaPass = MD5Util.formPassToDBPass(frontPass, salt);
-        if(!StringUtils.equals(calaPass,dbPass)){
-            return CodeMsg.PASSWORD_ERROR;
+        if (!StringUtils.equals(calaPass, dbPass)) {
+            throw new GlobalException(CodeMsg.PASSWORD_ERROR);
         }
-        return CodeMsg.SUCCESS;
+        return true;
     }
 }

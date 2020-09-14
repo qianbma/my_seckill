@@ -12,17 +12,17 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * 自定义校验器
  */
-@Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
+@Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER})
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = {IsMobileValidator.class })  //指定具体类
-public @interface  IsMobile {
-	
-	boolean required() default true;
-	
-	String message() default "手机号码格式错误";
+@Constraint(validatedBy = {IsMobileValidator.class})  //指定具体类
+public @interface IsMobile {
 
-	Class<?>[] groups() default { };
+    boolean required() default true;
 
-	Class<? extends Payload>[] payload() default { };
+    String message() default "手机号码格式错误";
+
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
 }

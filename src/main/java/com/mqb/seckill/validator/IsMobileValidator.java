@@ -8,23 +8,23 @@ import javax.validation.ConstraintValidatorContext;
 
 public class IsMobileValidator implements ConstraintValidator<IsMobile, String> {
 
-	private boolean required = false;
-	
-	public void initialize(IsMobile constraintAnnotation) {
-		required = constraintAnnotation.required();
-	}
+    private boolean required = false;
 
-	public boolean isValid(String value, ConstraintValidatorContext context) {
-		// isMobile注解中有该字段
-		if(required) {
-			return ValidatorUtil.isMobile(value);
-		}else {
-			if(StringUtils.isEmpty(value)) {
-				return true;
-			}else {
-				return ValidatorUtil.isMobile(value);
-			}
-		}
-	}
+    public void initialize(IsMobile constraintAnnotation) {
+        required = constraintAnnotation.required();
+    }
+
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        // isMobile注解中有该字段
+        if (required) {
+            return ValidatorUtil.isMobile(value);
+        } else {
+            if (StringUtils.isEmpty(value)) {
+                return true;
+            } else {
+                return ValidatorUtil.isMobile(value);
+            }
+        }
+    }
 
 }
