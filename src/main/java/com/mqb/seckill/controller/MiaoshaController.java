@@ -25,29 +25,37 @@ public class MiaoshaController {
     @Resource
     private MiaoshaService miaoshaService;
 
+    /**
+     * first test：10000 request/s,100tps.oversell
+     *
+     * @param model
+     * @param miaoshaUser
+     * @param goodsId
+     * @return
+     */
     @RequestMapping("do_miaosha")
-    public String doMiaosha(Model model, MiaoshaUser miaoshaUser, @RequestParam("goodsId")long goodsId){
-        model.addAttribute("user",miaoshaUser);
-        if(miaoshaUser==null){
+    public String doMiaosha(Model model, MiaoshaUser miaoshaUser, @RequestParam("goodsId") long goodsId) {
+        model.addAttribute("user", miaoshaUser);
+        if (miaoshaUser == null) {
             return "login";
         }
         //判断库存
         GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
         int stockCount = goods.getStockCount();
-        if(stockCount<=0){
+        if (stockCount <= 0) {
             model.addAttribute("errmsg", CodeMsg.MIAO_SHA_OVER);
             return "miaosha_fail";
         }
         // 判断是否已经秒杀到了
-        MiaoshaOrder order =  orderService.getMiaoshaOrderByUserIdGoodsId(miaoshaUser.getId(),goodsId);
-        if(order!=null){
+        MiaoshaOrder order = orderService.getMiaoshaOrderByUserIdGoodsId(miaoshaUser.getId(), goodsId);
+        if (order != null) {
             model.addAttribute("errmsg", CodeMsg.MIAOSHA_REPEATE);
             return "miaosha_fail";
         }
         // 减库存 下订单 写入秒杀订单
-        OrderInfo orderInfo = miaoshaService.miaosha(goods,miaoshaUser);
-        model.addAttribute("orderInfo",orderInfo);
-        model.addAttribute("goods",goods);
+        OrderInfo orderInfo = miaoshaService.miaosha(goods, miaoshaUser);
+        model.addAttribute("orderInfo", orderInfo);
+        model.addAttribute("goods", goods);
         return "order_detail";
     }
 

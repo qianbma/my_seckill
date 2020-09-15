@@ -2,7 +2,7 @@ package com.mqb.seckill.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.mqb.seckill.entity.User;
+import com.mqb.seckill.entity.MiaoshaUser;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -17,10 +17,10 @@ import java.util.List;
 public class UserUtil {
 
     private static void createUser(int count) throws Exception {
-        List<User> users = new ArrayList<User>(count);
+        List<MiaoshaUser> users = new ArrayList<MiaoshaUser>(count);
         //生成用户
         for (int i = 0; i < count; i++) {
-            User user = new User();
+            MiaoshaUser user = new MiaoshaUser();
             user.setId(13000000000L + i);
             user.setLoginCount(1);
             user.setNickname("user" + i);
@@ -30,12 +30,12 @@ public class UserUtil {
             users.add(user);
         }
         System.out.println("create user");
-//		//插入数据库
+        //插入数据库
         Connection conn = DBUtil.getConn();
-        String sql = "insert into sk_user(login_count, nickname, register_date, salt, password, id)values(?,?,?,?,?,?)";
+        String sql = "insert into miaosha_user(login_count, nickname, register_date, salt, password, id)values(?,?,?,?,?,?)";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         for (int i = 0; i < users.size(); i++) {
-            User user = users.get(i);
+            MiaoshaUser user = users.get(i);
             pstmt.setInt(1, user.getLoginCount());
             pstmt.setString(2, user.getNickname());
             pstmt.setTimestamp(3, new Timestamp(user.getRegisterDate().getTime()));
@@ -49,8 +49,8 @@ public class UserUtil {
         conn.close();
         System.out.println("insert to db");
         //登录，生成token
-        String urlString = "http://localhost:8080/login/do_login";
-        File file = new File("D:/tokens.txt");
+        String urlString = "http://localhost:8080/user/generateToken";
+        File file = new File("/Users/qianbma/Desktop/my-seckill/tokens.txt");
         if (file.exists()) {
             file.delete();
         }
@@ -58,7 +58,7 @@ public class UserUtil {
         file.createNewFile();
         raf.seek(0);
         for (int i = 0; i < users.size(); i++) {
-            User user = users.get(i);
+            MiaoshaUser user = users.get(i);
             URL url = new URL(urlString);
             HttpURLConnection co = (HttpURLConnection) url.openConnection();
             co.setRequestMethod("POST");
