@@ -36,7 +36,7 @@ public class MiaoshaUserServiceImpl implements MiaoshaUserService {
         }
         MiaoshaUser miaoshaUser = redisService.get(MiaoshaUserKey.token, token, MiaoshaUser.class);
         if (miaoshaUser != null) {
-            addCookie(response, miaoshaUser);
+            addCookie(response, token, miaoshaUser);
         }
         return miaoshaUser;
     }
@@ -58,8 +58,10 @@ public class MiaoshaUserServiceImpl implements MiaoshaUserService {
         if (!StringUtils.equals(calaPass, dbPass)) {
             throw new GlobalException(CodeMsg.PASSWORD_ERROR);
         }
+        // 生成token
+        String token = UUIDUtil.uuid();
         //设置缓存和cookie
-        addCookie(response, user);
+        addCookie(response, token, user);
         return true;
     }
 
@@ -67,9 +69,13 @@ public class MiaoshaUserServiceImpl implements MiaoshaUserService {
         return COOKIE_NAME_TOKEN;
     }
 
-    public void addCookie(HttpServletResponse response, MiaoshaUser user) {
-        // 生成token
-        String token = UUIDUtil.uuid();
+    /***
+     * token 不需要每次都重新生成，登陆时重新生成就行
+     * @param response
+     * @param token
+     * @param user
+     */
+    public void addCookie(HttpServletResponse response, String token, MiaoshaUser user) {
         // 保存到redis
         redisService.set(MiaoshaUserKey.token, token, user);
         Cookie cookie = new Cookie(COOKIE_NAME_TOKEN, token);

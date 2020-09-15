@@ -27,6 +27,10 @@ public class SampleController {
         return "hello";
     }
 
+    /**
+     * test mybatis
+     * @return
+     */
     @RequestMapping("/user")
     @ResponseBody
     public Result<User> getUserById() {
