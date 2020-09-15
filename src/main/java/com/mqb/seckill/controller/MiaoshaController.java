@@ -25,6 +25,14 @@ public class MiaoshaController {
     @Resource
     private MiaoshaService miaoshaService;
 
+    /**
+     * first test：10000 request/s,100tps.oversell
+     *
+     * @param model
+     * @param miaoshaUser
+     * @param goodsId
+     * @return
+     */
     @RequestMapping("do_miaosha")
     public String doMiaosha(Model model, MiaoshaUser miaoshaUser, @RequestParam("goodsId") long goodsId) {
         model.addAttribute("user", miaoshaUser);

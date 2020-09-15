@@ -65,6 +65,30 @@ public class MiaoshaUserServiceImpl implements MiaoshaUserService {
         return true;
     }
 
+    @Override
+    public String loginAndGetToken(HttpServletResponse response, LoginVo loginVo) {
+        if (loginVo == null) {
+            throw new GlobalException(CodeMsg.SERVER_ERROR);
+        }
+        String mobile = loginVo.getMobile();
+        String frontPass = loginVo.getPassword();
+        MiaoshaUser user = getById(mobile);
+        if (user == null) {
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+        }
+        String dbPass = user.getPassword();
+        String salt = user.getSalt();
+        String calaPass = MD5Util.formPassToDBPass(frontPass, salt);
+        if (!StringUtils.equals(calaPass, dbPass)) {
+            throw new GlobalException(CodeMsg.PASSWORD_ERROR);
+        }
+        // 生成token
+        String token = UUIDUtil.uuid();
+        //设置缓存和cookie
+        addCookie(response, token, user);
+        return token;
+    }
+
     public String getCookieTokenName() {
         return COOKIE_NAME_TOKEN;
     }

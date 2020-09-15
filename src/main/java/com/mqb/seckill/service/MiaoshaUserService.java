@@ -12,6 +12,8 @@ public interface MiaoshaUserService {
 
     Boolean login(HttpServletResponse response, LoginVo loginVo);
 
+    String loginAndGetToken(HttpServletResponse response, LoginVo loginVo);
+
     MiaoshaUser getByToken(HttpServletResponse response, String token);
 
     String getCookieTokenName();
