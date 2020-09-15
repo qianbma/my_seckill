@@ -1,6 +1,5 @@
 package com.mqb.seckill.service.impl;
 
-import com.mqb.seckill.entity.Goods;
 import com.mqb.seckill.entity.GoodsVo;
 import com.mqb.seckill.entity.MiaoshaUser;
 import com.mqb.seckill.entity.OrderInfo;

@@ -29,6 +29,7 @@ public class SampleController {
 
     /**
      * test mybatis
+     *
      * @return
      */
     @RequestMapping("/user")
