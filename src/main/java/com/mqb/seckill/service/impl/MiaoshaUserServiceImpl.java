@@ -26,7 +26,36 @@ public class MiaoshaUserServiceImpl implements MiaoshaUserService {
 
     @Override
     public MiaoshaUser getById(String id) {
-        return miaoshaUserMapper.getById(id);
+        // 取缓存
+        MiaoshaUser miaoshaUser = redisService.get(MiaoshaUserKey.getById, "" + id, MiaoshaUser.class);
+        // 取数据库
+        if (miaoshaUser != null) {
+            return miaoshaUser;
+        }
+        miaoshaUser = miaoshaUserMapper.getById(id);
+        if (miaoshaUser != null) {
+            redisService.set(MiaoshaUserKey.getById, "" + id, miaoshaUser);
+        }
+        return miaoshaUser;
+    }
+
+    @Override
+    public boolean updatePassword(String token, long id, String fromPass) {
+        // 取user
+        MiaoshaUser miaoshaUser = getById("" + id);
+        if (miaoshaUser == null) {
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+        }
+        // 更新数据库
+        MiaoshaUser toBeUpdate = new MiaoshaUser();
+        toBeUpdate.setId(id);
+        toBeUpdate.setPassword(MD5Util.formPassToDBPass(fromPass, miaoshaUser.getSalt()));
+        miaoshaUserMapper.update(toBeUpdate);
+        // 处理缓存
+        redisService.delete(MiaoshaUserKey.getById, "" + id);
+        miaoshaUser.setPassword(toBeUpdate.getPassword());
+        redisService.set(MiaoshaUserKey.token, token, miaoshaUser);
+        return true;
     }
 
     @Override

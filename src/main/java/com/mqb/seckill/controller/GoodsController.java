@@ -38,6 +38,7 @@ public class GoodsController {
 
     /**
      * 第一次测试：未优化前，并发10的情况下，处理10.7个请求。并发1000,吞吐55
+     * 45
      *
      * @param model
      * @param miaoshaUser inject from UserArgument Resolver in config package

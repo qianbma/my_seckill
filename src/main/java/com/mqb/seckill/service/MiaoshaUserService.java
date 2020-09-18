@@ -10,6 +10,8 @@ public interface MiaoshaUserService {
 
     MiaoshaUser getById(String id);
 
+    boolean updatePassword(String token, long id, String fromPass);
+
     Boolean login(HttpServletResponse response, LoginVo loginVo);
 
     String loginAndGetToken(HttpServletResponse response, LoginVo loginVo);
