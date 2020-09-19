@@ -37,8 +37,7 @@ public class GoodsController {
     private ApplicationContext applicationContext;
 
     /**
-     * 第一次测试：未优化前，并发10的情况下，处理10.7个请求。并发1000,吞吐55
-     *
+     * 初始版本：(1000 1 10)tps 35 jmeter机器执行 jar机器
      * @param model
      * @param miaoshaUser inject from UserArgument Resolver in config package
      * @return
