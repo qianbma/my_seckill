@@ -23,6 +23,7 @@ public class GoodsController {
     private GoodsService goodsService;
 
     /**
+     * 初始版本：(1000 1 10)tps 35 jmeter机器执行 jar机器
      * @param model
      * @param miaoshaUser inject from UserArgument Resolver in config package
      * @return
